@@ -1,3 +1,4 @@
+// admin.js
 (function() {
     console.log('admin.js загружен');
 
@@ -27,7 +28,6 @@
         form.style.display = form.style.display === 'none' ? 'block' : 'none';
         console.log('toggleGroupForm:', form.style.display);
     }
-
     window.toggleGroupForm = toggleGroupForm;
 
     // Загрузка всех групп
@@ -48,13 +48,14 @@
 
             tbody.innerHTML = '';
             res.data.forEach(group => {
-                const teacherId = group.teacher;
                 const studentIds = group.students.join(', ');
                 tbody.innerHTML += `
                     <tr>
                         <td>${group.name}</td>
-                        <td>${teacherId}</td>
+                        <td>${group.teacher}</td>
                         <td>${studentIds}</td>
+                        <td>${group.day_of_week || '-'}</td>
+                        <td>${group.start_time || '-'}</td>
                     </tr>
                 `;
             });
@@ -71,14 +72,16 @@
             .split(',')
             .map(s => parseInt(s.trim()))
             .filter(s => !isNaN(s));
+        const day_of_week = document.getElementById('group-day').value;
+        const start_time = document.getElementById('group-time').value;
 
-        if (!name || isNaN(teacher)) {
-            alert('Введите название группы и ID учителя!');
+        if (!name || isNaN(teacher) || !day_of_week || !start_time) {
+            alert('Введите название, ID учителя, день недели и время начала!');
             return;
         }
 
         try {
-            const res = await axios.post('/api/groups/', { name, teacher, students }, {
+            const res = await axios.post('/api/groups/', { name, teacher, students, day_of_week, start_time }, {
                 withCredentials: true,
                 headers: { 'X-CSRFToken': csrfToken }
             });
@@ -87,6 +90,8 @@
             document.getElementById('group-name').value = '';
             document.getElementById('group-teacher').value = '';
             document.getElementById('group-students').value = '';
+            document.getElementById('group-day').value = '';
+            document.getElementById('group-time').value = '';
             const form = document.getElementById('group-form');
             if (form) form.style.display = 'none';
 
@@ -96,11 +101,12 @@
             alert('Не удалось создать группу: ' + (err.response?.status || 'Ошибка'));
         }
     }
-
     window.createGroup = createGroup;
 
+    // Запуск после загрузки страницы
     window.addEventListener('DOMContentLoaded', () => {
         console.log('Страница admin загружена, запускаем loadGroups...');
         loadGroups();
     });
+
 })();

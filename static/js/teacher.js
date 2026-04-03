@@ -1,3 +1,4 @@
+// teacher.js
 (function() {
     console.log('teacher.js загружен');
 
@@ -44,6 +45,8 @@
                         <td>${group.name}</td>
                         <td>${group.teacher.username}</td>
                         <td>${students}</td>
+                        <td>${group.day_of_week || '-'}</td>
+                        <td>${group.start_time || '-'}</td>
                     </tr>
                 `;
             });
@@ -53,8 +56,10 @@
         }
     }
 
+    // Запуск после загрузки страницы
     window.addEventListener('DOMContentLoaded', () => {
         console.log('Страница teacher загружена, запускаем loadTeacherGroups...');
         loadTeacherGroups();
     });
+
 })();

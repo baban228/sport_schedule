@@ -13,7 +13,7 @@ class UserSimpleSerializer(serializers.ModelSerializer):
 class GroupAdminSerializer(serializers.ModelSerializer):
     class Meta:
         model = Group
-        fields = ['id', 'name', 'teacher', 'students']
+        fields = ['id', 'name', 'teacher', 'students', 'day_of_week', 'start_time']
 
     def validate_teacher(self, value):
         if value and value.role != 'teacher':
@@ -36,13 +36,14 @@ class GroupTeacherSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Group
-        fields = ['id', 'name', 'teacher', 'students']
+        fields = ['id', 'name', 'teacher', 'students', 'day_of_week', 'start_time']
 
 
 # --- ДЛЯ УЧЕНИКА (тоже read only) ---
 class GroupStudentSerializer(serializers.ModelSerializer):
     teacher = UserSimpleSerializer(read_only=True)
+    students = UserSimpleSerializer(many=True, read_only=True)
 
     class Meta:
         model = Group
-        fields = ['id', 'name', 'teacher']
+        fields = ['id', 'name', 'teacher', 'students', 'day_of_week', 'start_time']

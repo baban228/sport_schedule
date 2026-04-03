@@ -9,6 +9,17 @@
     <input type="text" id="group-name" class="form-control mb-2" placeholder="Название группы">
     <input type="number" id="group-teacher" class="form-control mb-2" placeholder="ID учителя">
     <input type="text" id="group-students" class="form-control mb-2" placeholder="ID учеников через запятую">
+    <select id="group-day" class="form-control mb-2">
+        <option value="">Выберите день недели</option>
+        <option value="Mon">Понедельник</option>
+        <option value="Tue">Вторник</option>
+        <option value="Wed">Среда</option>
+        <option value="Thu">Четверг</option>
+        <option value="Fri">Пятница</option>
+        <option value="Sat">Суббота</option>
+        <option value="Sun">Воскресенье</option>
+    </select>
+    <input type="time" id="group-time" class="form-control mb-2" placeholder="Время начала">
     <button class="btn btn-success" onclick="createGroup()">Сохранить</button>
 </div>
 
@@ -18,6 +29,8 @@
             <th>Название группы</th>
             <th>Учитель (ID)</th>
             <th>Ученики (ID)</th>
+            <th>День недели</th>
+            <th>Время начала</th>
         </tr>
     </thead>
     <tbody>
