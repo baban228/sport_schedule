@@ -1,0 +1,32 @@
+{% extends 'admin_base.html' %}
+{% block content %}
+{% load static %}
+<h2>Группы</h2>
+
+<button id="add-group-btn" class="btn btn-primary mb-3" onclick="toggleGroupForm()">Добавить группу</button>
+
+<div id="group-form" class="mb-4" style="display:none;">
+    <input type="text" id="group-name" class="form-control mb-2" placeholder="Название группы">
+    <input type="number" id="group-teacher" class="form-control mb-2" placeholder="ID учителя">
+    <input type="text" id="group-students" class="form-control mb-2" placeholder="ID учеников через запятую">
+    <button class="btn btn-success" onclick="createGroup()">Сохранить</button>
+</div>
+
+<table class="table table-bordered" id="groups-table">
+    <thead>
+        <tr>
+            <th>Название группы</th>
+            <th>Учитель (ID)</th>
+            <th>Ученики (ID)</th>
+        </tr>
+    </thead>
+    <tbody>
+        <!-- Группы подгружаются через JS -->
+    </tbody>
+</table>
+{% endblock %}
+
+{% block extra_js %}
+<script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+<script src="{% static 'js/admin.js' %}"></script>
+{% endblock %}

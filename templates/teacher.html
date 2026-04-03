@@ -1,0 +1,23 @@
+{% extends 'admin_base.html' %}
+{% block content %}
+{% load static %}
+<h2>Моё расписание</h2>
+
+<table class="table table-bordered" id="teacher-groups-table">
+    <thead>
+        <tr>
+            <th>Группа</th>
+            <th>Учитель</th>
+            <th>Ученики</th>
+        </tr>
+    </thead>
+    <tbody>
+        <!-- Данные будут подгружаться JS -->
+    </tbody>
+</table>
+{% endblock %}
+
+{% block extra_js %}
+<script src="{% static 'js/axios.min.js' %}"></script>
+<script src="{% static 'js/teacher.js' %}"></script>
+{% endblock %}
