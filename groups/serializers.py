@@ -41,9 +41,18 @@ class GroupTeacherSerializer(serializers.ModelSerializer):
 
 # --- ДЛЯ УЧЕНИКА (тоже read only) ---
 class GroupStudentSerializer(serializers.ModelSerializer):
-    teacher = UserSimpleSerializer(read_only=True)
-    students = UserSimpleSerializer(many=True, read_only=True)
+    teacher = serializers.CharField(source='teacher.username', read_only=True)
+    students = serializers.PrimaryKeyRelatedField(many=True, read_only=True)
 
     class Meta:
         model = Group
-        fields = ['id', 'name', 'teacher', 'students', 'day_of_week', 'start_time']
+        # все нужные поля
+        fields = [
+            'id',
+            'name',
+            'teacher',
+            'students',
+            'color',
+            'day_of_week',
+            'start_time'
+        ]
