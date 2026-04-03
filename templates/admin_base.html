@@ -1,25 +1,143 @@
 {% load static %}
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ru">
 <head>
     <meta charset="UTF-8">
-    <title>Админ Панель</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Админ Панель • SportSchedule</title>
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Montserrat:wght@700;800&display=swap" rel="stylesheet">
+
+    <!-- Bootstrap 5 -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="{% static 'css/admin_base.css' %}">
 </head>
 <body>
 
-<nav class="navbar navbar-dark bg-dark mb-4">
-    <div class="container-fluid">
-        <span class="navbar-brand mb-0 h1">Админ Панель - Спортивное Расписание</span>
+<!-- Navbar -->
+<nav class="navbar navbar-expand-lg sticky-top">
+    <div class="container">
+        <!-- Кнопка "Назад" -->
+        <a href="{% url 'home' %}" class="btn-back">
+            <i class="fas fa-arrow-left"></i>
+            <span class="d-none d-sm-inline">Назад</span>
+        </a>
+
+        <!-- Бренд -->
+        <a class="navbar-brand" href="{% url 'home' %}">
+            <i class="fas fa-calendar-alt"></i>
+            <span class="d-none d-md-inline">Админ-панель</span>
+            <span class="d-md-none">Admin</span>
+        </a>
+
+        <!-- Правая часть: Профиль с выпадающим меню -->
+        <div class="ms-auto">
+            {% if user.is_authenticated %}
+                <div class="dropdown">
+                    <button class="user-dropdown-toggle dropdown-toggle" type="button" id="userDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                        <div class="user-avatar-small">
+                            <i class="fas fa-user"></i>
+                        </div>
+                        <span class="user-name-display">{{ user.username }}</span>
+                        <i class="fas fa-chevron-down dropdown-arrow"></i>
+                    </button>
+
+                    <ul class="dropdown-menu dropdown-menu-end dropdown-menu-custom" aria-labelledby="userDropdown">
+                        <li>
+                            <a class="dropdown-item-custom" href="{% url 'logout' %}?next={% url 'home' %}">
+                                <i class="fas fa-right-from-bracket"></i>
+                                Выйти из аккаунта
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            {% endif %}
+        </div>
     </div>
 </nav>
-<div class="container">
+
+<!-- Main Content -->
+<main class="container py-3">
     {% block content %}
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="hero-content animate-fade">
+            <h1 class="hero-title">Панель управления</h1>
+            <p class="hero-subtitle">Управляйте расписанием, пользователями и событиями в едином интерфейсе</p>
+            <div class="d-flex justify-content-center gap-3 flex-wrap">
+                <button class="btn btn-primary-custom">
+                    <i class="fas fa-plus me-2"></i>Добавить событие
+                </button>
+                <button class="btn btn-outline-light rounded-pill px-4 py-2" style="border-color: rgba(255,255,255,0.3);">
+                    <i class="fas fa-chart-bar me-2"></i>Статистика
+                </button>
+            </div>
+            <div class="role-badge role-admin mt-3">
+                <i class="fas fa-crown"></i> Администратор
+            </div>
+        </div>
+    </section>
+
+    <!-- Карточки управления -->
+    <div class="row g-4 mt-2">
+        <div class="col-md-6 col-lg-4">
+            <div class="card card-custom p-4">
+                <div class="icon-box">
+                    <i class="fas fa-users text-white fs-5"></i>
+                </div>
+                <h5>Пользователи</h5>
+                <p>Управление доступом, ролями и профилями</p>
+                <a href="#" class="btn btn-primary-custom btn-sm">Управлять</a>
+            </div>
+        </div>
+
+        <div class="col-md-6 col-lg-4">
+            <div class="card card-custom p-4">
+                <div class="icon-box">
+                    <i class="fas fa-calendar-check text-white fs-5"></i>
+                </div>
+                <h5>Расписание</h5>
+                <p>Редактирование занятий, тренировок и событий</p>
+                <a href="#" class="btn btn-primary-custom btn-sm">Открыть</a>
+            </div>
+        </div>
+
+        <div class="col-md-6 col-lg-4">
+            <div class="card card-custom p-4">
+                <div class="icon-box">
+                    <i class="fas fa-chart-line text-white fs-5"></i>
+                </div>
+                <h5>Аналитика</h5>
+                <p>Просмотр статистики, отчётов и активности</p>
+                <a href="#" class="btn btn-primary-custom btn-sm">Просмотреть</a>
+            </div>
+        </div>
+    </div>
+
     {% endblock %}
-</div>
+</main>
+
+<!-- Footer -->
+<footer class="footer">
+    <div class="container">
+        <p class="mb-0">&copy; 2024 SportSchedule • Панель администратора</p>
+    </div>
+</footer>
+
+<!-- Bootstrap JS -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<!-- Axios -->
 <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+<!-- Custom Admin JS -->
 <script src="{% static 'js/admin.js' %}"></script>
 {% block extra_js %}{% endblock %}
-</body>
 
+</body>
 </html>

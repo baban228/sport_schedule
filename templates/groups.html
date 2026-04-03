@@ -1,42 +1,101 @@
 {% extends 'admin_base.html' %}
-{% block content %}
 {% load static %}
-<h2>Группы</h2>
 
-<button id="add-group-btn" class="btn btn-primary mb-3" onclick="toggleGroupForm()">Добавить группу</button>
+{% block content %}
 
-<div id="group-form" class="mb-4" style="display:none;">
-    <input type="text" id="group-name" class="form-control mb-2" placeholder="Название группы">
-    <input type="number" id="group-teacher" class="form-control mb-2" placeholder="ID учителя">
-    <input type="text" id="group-students" class="form-control mb-2" placeholder="ID учеников через запятую">
-    <select id="group-day" class="form-control mb-2">
-        <option value="">Выберите день недели</option>
-        <option value="Mon">Понедельник</option>
-        <option value="Tue">Вторник</option>
-        <option value="Wed">Среда</option>
-        <option value="Thu">Четверг</option>
-        <option value="Fri">Пятница</option>
-        <option value="Sat">Суббота</option>
-        <option value="Sun">Воскресенье</option>
-    </select>
-    <input type="time" id="group-time" class="form-control mb-2" placeholder="Время начала">
-    <button class="btn btn-success" onclick="createGroup()">Сохранить</button>
+<!-- Заголовок страницы -->
+<div class="d-flex justify-content-between align-items-center mb-4 animate-fade">
+    <div>
+        <h2 class="hero-title mb-0" style="font-size: 2.5rem;">Группы</h2>
+        <p class="text-white-50 mt-1 mb-0">Управление учебными группами и расписанием</p>
+    </div>
+    <button id="add-group-btn" class="btn btn-primary-custom" onclick="toggleGroupForm()">
+        <i class="fas fa-plus me-2"></i>Добавить группу
+    </button>
 </div>
 
-<table class="table table-bordered" id="groups-table">
-    <thead>
-        <tr>
-            <th>Название группы</th>
-            <th>Учитель (ID)</th>
-            <th>Ученики (ID)</th>
-            <th>День недели</th>
-            <th>Время начала</th>
-        </tr>
-    </thead>
-    <tbody>
-        <!-- Группы подгружаются через JS -->
-    </tbody>
-</table>
+<!-- Форма добавления (Скрыта по умолчанию) -->
+<div id="group-form" class="card card-custom p-4 mb-5 animate-fade" style="display:none; border-top: 3px solid var(--accent-purple);">
+    <h5 class="mb-4" style="font-family: 'Montserrat', sans-serif; font-weight: 700; color: white;">
+        Новая группа
+    </h5>
+
+    <div class="row g-3">
+        <div class="col-md-6">
+            <!-- Яркий лейбл -->
+            <label class="form-label text-white fw-bold">Название группы</label>
+            <input type="text" id="group-name" class="form-control form-control-bright" placeholder="Например: Футбол Юниоры">
+        </div>
+
+        <div class="col-md-6">
+            <label class="form-label text-white fw-bold">ID Учителя</label>
+            <input type="number" id="group-teacher" class="form-control form-control-bright" placeholder="ID преподавателя">
+        </div>
+
+        <div class="col-md-6">
+            <label class="form-label text-white fw-bold">День недели</label>
+            <select id="group-day" class="form-select form-control-bright">
+                <option value="" selected disabled>Выберите день</option>
+                <option value="Mon">Понедельник</option>
+                <option value="Tue">Вторник</option>
+                <option value="Wed">Среда</option>
+                <option value="Thu">Четверг</option>
+                <option value="Fri">Пятница</option>
+                <option value="Sat">Суббота</option>
+                <option value="Sun">Воскресенье</option>
+            </select>
+        </div>
+
+        <div class="col-md-6">
+            <label class="form-label text-white fw-bold">Время начала</label>
+            <input type="time" id="group-time" class="form-control form-control-bright">
+        </div>
+
+        <div class="col-12">
+            <label class="form-label text-white fw-bold">ID Учеников</label>
+            <input type="text" id="group-students" class="form-control form-control-bright" placeholder="Введите ID через запятую (например: 1, 5, 12)">
+            <div class="form-text text-white-50" style="font-size: 0.85rem; margin-top: 5px;">
+                Вводите идентификаторы существующих пользователей через запятую
+            </div>
+        </div>
+    </div>
+
+    <div class="mt-4 d-flex gap-3">
+        <button class="btn btn-primary-custom" onclick="createGroup()">
+            <i class="fas fa-save me-2"></i>Сохранить
+        </button>
+        <button class="btn btn-outline-light rounded-pill px-4" onclick="toggleGroupForm()" style="border-color: rgba(255,255,255,0.2); font-size: 0.9rem;">
+            Отмена
+        </button>
+    </div>
+</div>
+
+<!-- Таблица групп -->
+<div class="table-responsive animate-fade">
+    <table class="table table-groups" id="groups-table">
+        <thead>
+            <tr>
+                <th>Название группы</th>
+                <th>Учитель (ID)</th>
+                <th>Ученики (ID)</th>
+                <th>День недели</th>
+                <th>Время</th>
+            </tr>
+        </thead>
+        <tbody>
+            <!-- Данные подгружаются через JS -->
+            <tr>
+                <td colspan="5" class="text-center py-5 text-white-50">
+                    <i class="fas fa-inbox fa-2x mb-3 d-block opacity-50"></i>
+                    Список групп пуст или загружается...
+                </td>
+            </tr>
+        </tbody>
+    </table>
+</div>
+
+<link rel="stylesheet" href="{% static 'css/groups.css' %}">
+
 {% endblock %}
 
 {% block extra_js %}

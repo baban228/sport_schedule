@@ -1,29 +1,40 @@
 {% load static %}
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ru">
 <head>
     <meta charset="UTF-8">
-    <title>Спортивное расписание</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SportSchedule • Персональное расписание</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="{% static 'css/index.css' %}">
 </head>
 <body>
 
-<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
-    <div class="container-fluid">
-        <a class="navbar-brand" href="#">Спортивное расписание</a>
+<nav class="navbar navbar-expand-lg navbar-dark sticky-top">
+    <div class="container">
+        <a class="navbar-brand" href="#">
+            <i class="fas fa-dumbbell"></i>
+            SportSchedule
+        </a>
         <div class="d-flex ms-auto">
             {% if not user.is_authenticated %}
-                <button class="btn btn-primary me-2" data-bs-toggle="modal" data-bs-target="#loginModal">Войти</button>
-                <button class="btn btn-success" data-bs-toggle="modal" data-bs-target="#registerModal">Регистрация</button>
+                <button class="btn btn-primary-custom" data-bs-toggle="modal" data-bs-target="#loginModal">
+                    <i class="fas fa-right-to-bracket me-1"></i> Войти
+                </button>
             {% else %}
-                <!-- Ник + выпадающий выход -->
                 <div class="dropdown">
-                    <button class="btn btn-primary dropdown-toggle" type="button" id="userMenuButton" data-bs-toggle="dropdown" aria-expanded="false">
-                        {{ user.username }}
+                    <button class="btn btn-primary-custom d-flex align-items-center gap-2" type="button" id="userMenuButton" data-bs-toggle="dropdown">
+                        <i class="fas fa-user"></i>
+                        <span class="d-none d-md-block">{{ user.username }}</span>
                     </button>
                     <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userMenuButton">
-                        <li><a class="dropdown-item" href="{% url 'logout' %}">Выйти</a></li>
+                        <li>
+                            <a class="dropdown-item" href="{% url 'logout' %}">
+                                <i class="fas fa-right-from-bracket"></i> Выйти
+                            </a>
+                        </li>
                     </ul>
                 </div>
             {% endif %}
@@ -31,48 +42,78 @@
     </div>
 </nav>
 
-<div class="container mt-5 text-center">
-    <h1>Добро пожаловать!</h1>
-    <p>Смотрите расписание ваших групп и уроков.</p>
+<div class="container">
+    <div class="hero">
+        <div class="hero-content">
+            <h1 class="hero-title">Ваше спортивное расписание</h1>
+            <p class="hero-subtitle">Персонализированный доступ к тренировкам для студентов, преподавателей и администраторов</p>
 
-    {% if user.is_authenticated %}
-        <div class="d-flex justify-content-center mt-4">
-            {% if user.role == "admin" %}
-                <a href="{% url 'admin-dashboard' %}" class="btn btn-primary me-2">Админ-панель</a>
-            {% elif user.role == "teacher" %}
-                <a href="{% url 'teacher-dashboard' %}" class="btn btn-success me-2">Моё расписание</a>
+            {% if user.is_authenticated %}
+                <div class="d-flex justify-content-center flex-wrap gap-3 mt-4">
+                    {% if user.role == "admin" %}
+                        <a href="{% url 'admin-dashboard' %}" class="btn btn-primary-custom px-4 py-3 fs-5">
+                            <i class="fas fa-shield-halved me-2"></i> Админ-панель
+                        </a>
+                        <div class="role-badge role-admin">
+                            <i class="fas fa-crown me-1"></i> Администратор
+                        </div>
+                    {% elif user.role == "teacher" %}
+                        <a href="{% url 'teacher-dashboard' %}" class="btn btn-primary-custom px-4 py-3 fs-5">
+                            <i class="fas fa-chalkboard-user me-2"></i> Моё расписание
+                        </a>
+                        <div class="role-badge role-teacher">
+                            <i class="fas fa-user-tie me-1"></i> Преподаватель
+                        </div>
+                    {% else %}
+                        <a href="{% url 'student-dashboard' %}" class="btn btn-primary-custom px-4 py-3 fs-5">
+                            <i class="fas fa-graduation-cap me-2"></i> Моё расписание
+                        </a>
+                        <div class="role-badge role-student">
+                            <i class="fas fa-person-running me-1"></i> Студент
+                        </div>
+                    {% endif %}
+                </div>
             {% else %}
-                <a href="{% url 'student-dashboard' %}" class="btn btn-info me-2">Моё расписание</a>
+                <div class="mt-5 py-4 px-5 bg-dark rounded-4 d-inline-block border border-1" style="border-color: rgba(230, 57, 118, 0.2);">
+                    <p class="fs-4 fw-medium mb-0" style="color: var(--accent-pink);">
+                        <i class="fas fa-lightbulb me-2"></i> Авторизуйтесь для доступа к персональному расписанию
+                    </p>
+                </div>
             {% endif %}
         </div>
-    {% endif %}
+    </div>
 </div>
 
 <!-- Модальное окно логина -->
-<div class="modal fade" id="loginModal" tabindex="-1" aria-labelledby="loginModalLabel" aria-hidden="true">
-  <div class="modal-dialog">
+<div class="modal fade" id="loginModal" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
     <div class="modal-content">
       <form method="post" action="{% url 'login' %}">
         {% csrf_token %}
         <div class="modal-header">
-          <h5 class="modal-title" id="loginModalLabel">Вход</h5>
+          <h5 class="modal-title">Вход в систему</h5>
           <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Закрыть"></button>
         </div>
         <div class="modal-body">
-          <div class="mb-3">
-            <label for="id_username" class="form-label">Логин</label>
-            <input type="text" name="username" class="form-control" id="id_username" required>
+          <div class="mb-4">
+            <label class="form-label">Имя пользователя</label>
+            <input type="text" name="username" class="form-control form-control-lg" required>
           </div>
-          <div class="mb-3">
-            <label for="id_password" class="form-label">Пароль</label>
-            <input type="password" name="password" class="form-control" id="id_password" required>
+          <div class="mb-4">
+            <label class="form-label">Пароль</label>
+            <input type="password" name="password" class="form-control form-control-lg" required>
           </div>
-          <div class="text-center">
-            <a href="#" data-bs-target="#registerModal" data-bs-toggle="modal" data-bs-dismiss="modal">Регистрация</a>
-          </div>
+          <a href="#" class="modal-switch-link"
+             data-bs-target="#registerModal"
+             data-bs-toggle="modal"
+             data-bs-dismiss="modal">
+             <i class="fas fa-user-plus me-1"></i>Нет аккаунта? Создать учётную запись
+          </a>
         </div>
         <div class="modal-footer">
-          <button type="submit" class="btn btn-primary w-100">Войти</button>
+          <button type="submit" class="btn btn-primary-custom btn-lg w-100">
+            <i class="fas fa-right-to-bracket me-2"></i> Войти
+          </button>
         </div>
       </form>
     </div>
@@ -80,24 +121,80 @@
 </div>
 
 <!-- Модальное окно регистрации -->
-<div class="modal fade" id="registerModal" tabindex="-1" aria-labelledby="registerModalLabel" aria-hidden="true">
-  <div class="modal-dialog">
+<div class="modal fade" id="registerModal" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
     <div class="modal-content">
       <form method="post" action="{% url 'register' %}">
         {% csrf_token %}
         <div class="modal-header">
-          <h5 class="modal-title" id="registerModalLabel">Регистрация</h5>
+          <h5 class="modal-title">Создание учётной записи</h5>
           <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Закрыть"></button>
         </div>
         <div class="modal-body">
-          {{ form.as_p }}
+          <!-- Имя -->
+          <div class="mb-4">
+            <label class="form-label">Имя</label>
+            <input type="text" name="first_name" class="form-control form-control-lg" placeholder="Введите ваше имя" required>
+            {% if form.first_name.errors %}
+              <span class="text-field-error">{{ form.first_name.errors|first }}</span>
+            {% endif %}
+          </div>
+
+          <!-- Почта -->
+          <div class="mb-4">
+            <label class="form-label">Почта</label>
+            <input type="email" name="email" class="form-control form-control-lg" placeholder="example@mail.com" required>
+            {% if form.email.errors %}
+              <span class="text-field-error">{{ form.email.errors|first }}</span>
+            {% endif %}
+          </div>
+
+          <!-- Пароль -->
+          <div class="mb-4">
+            <label class="form-label">Пароль</label>
+            <input type="password" name="password1" class="form-control form-control-lg" placeholder="Минимум 8 символов" required>
+            {% if form.password1.errors %}
+              <span class="text-field-error">{{ form.password1.errors|first }}</span>
+            {% endif %}
+          </div>
+
+          <!-- Роль -->
+          <div class="mb-4">
+            <label class="form-label">Роль в системе</label>
+            <select name="role" class="form-select form-select-lg" required>
+              <option value="">Выберите роль</option>
+              <option value="student">Студент</option>
+              <option value="teacher">Преподаватель</option>
+              <option value="admin">Администратор</option>
+            </select>
+            {% if form.role.errors %}
+              <span class="text-field-error">{{ form.role.errors|first }}</span>
+            {% endif %}
+          </div>
+
+          <!-- Ссылка для возврата к входу -->
+          <a href="#" class="modal-switch-link"
+             data-bs-target="#loginModal"
+             data-bs-toggle="modal"
+             data-bs-dismiss="modal">
+             <i class="fas fa-arrow-left me-1"></i>Уже есть аккаунт? Войти
+          </a>
         </div>
         <div class="modal-footer">
-          <button type="submit" class="btn btn-success w-100">Зарегистрироваться</button>
+          <button type="submit" class="btn btn-primary-custom btn-lg w-100">
+            <i class="fas fa-user-plus me-2"></i> Создать аккаунт
+          </button>
         </div>
       </form>
     </div>
   </div>
+</div>
+
+<div class="footer">
+    <div class="d-flex justify-content-center align-items-center gap-3">
+        <i class="fas fa-heart" style="color: var(--accent-pink);"></i>
+        <span>SportSchedule • Элегантное управление тренировками</span>
+    </div>
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
