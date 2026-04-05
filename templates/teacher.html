@@ -1,25 +1,42 @@
-{% extends 'admin_base.html' %}
-{% block content %}
+{% extends 'adm_teac_base.html' %}
 {% load static %}
-<h2>Моё расписание</h2>
 
-<table class="table table-bordered" id="teacher-groups-table">
-    <thead>
-        <tr>
-            <th>Группа</th>
-            <th>Учитель</th>
-            <th>Ученики</th>
-            <th>День недели</th>
-            <th>Время начала</th>
-        </tr>
-    </thead>
-    <tbody>
-        <!-- Данные будут подгружаться JS -->
-    </tbody>
-</table>
+{% block content %}
+
+<!-- Заголовок страницы -->
+<div class="mb-4 animate-fade">
+    <h2 class="hero-title mb-0" style="font-size: 2.5rem;">Моё расписание</h2>
+    <p class="text-white-50 mt-1 mb-0">Список ваших групп и время занятий</p>
+</div>
+
+<!-- Таблица расписания -->
+<div class="table-responsive animate-fade">
+    <table class="table table-teacher-schedule" id="teacher-groups-table">
+        <thead>
+            <tr>
+                <!-- Добавляем style="width: ..." для контроля пропорций -->
+                <th style="width: 25%;"><i class="fas fa-users me-2 text-white-50"></i>Группа</th>
+                <th style="width: 35%;"><i class="fas fa-user-graduate me-2 text-white-50"></i>Ученики</th>
+                <th style="width: 20%;"><i class="fas fa-calendar-day me-2 text-white-50"></i>День недели</th>
+                <th style="width: 20%;"><i class="fas fa-clock me-2 text-white-50"></i>Время начала</th>
+            </tr>
+        </thead>
+        <tbody>
+            <!-- Данные будут подгружаться JS -->
+            <tr>
+                <td colspan="4" class="text-center py-5 text-white-50">
+                    <i class="fas fa-spinner fa-spin me-2"></i> Загрузка расписания...
+                </td>
+            </tr>
+        </tbody>
+    </table>
+</div>
+
+<link rel="stylesheet" href="{% static 'css/teacher.css' %}">
+
 {% endblock %}
 
 {% block extra_js %}
-<script src="{% static 'js/axios.min.js' %}"></script>
 <script src="{% static 'js/teacher.js' %}"></script>
+
 {% endblock %}

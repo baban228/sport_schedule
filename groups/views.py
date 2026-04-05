@@ -10,7 +10,7 @@ from .serializers import (
 from .permissions import IsAdminOrReadOnly
 
 
-# --- АДМИН ---
+# админ
 class GroupAdminViewSet(viewsets.ModelViewSet):
     queryset = Group.objects.all()
     serializer_class = GroupAdminSerializer
@@ -25,7 +25,7 @@ class GroupAdminViewSet(viewsets.ModelViewSet):
         serializer.save()
 
 
-# --- УЧИТЕЛЬ ---
+# учитель
 class TeacherGroupViewSet(viewsets.ReadOnlyModelViewSet):
     serializer_class = GroupTeacherSerializer
     permission_classes = [IsAuthenticated]
@@ -37,7 +37,7 @@ class TeacherGroupViewSet(viewsets.ReadOnlyModelViewSet):
         return Group.objects.filter(teacher=user)
 
 
-# --- УЧЕНИК ---
+# ученик
 class StudentGroupViewSet(viewsets.ReadOnlyModelViewSet):
     serializer_class = GroupStudentSerializer
     permission_classes = [IsAuthenticated]

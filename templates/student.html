@@ -3,32 +3,291 @@
 <html lang="ru">
 <head>
 <meta charset="UTF-8">
-<title>Расписание ученика</title>
-<style>
-  body { font-family: sans-serif; padding: 20px; }
-  h2 { margin-bottom: 20px; }
-  #calendar { display: grid; grid-template-columns: repeat(7, 60px); grid-gap: 5px; }
-  .day { 
-    width: 60px; height: 60px; 
-    border: 1px solid #ccc; 
-    display: flex; justify-content: center; align-items: center;
-    cursor: pointer; border-radius: 4px; position: relative;
-  }
-  .day.has-class { color: #fff; font-weight: bold; }
-  #popup {
-    position: absolute; padding: 10px; background: #333; color: #fff;
-    border-radius: 4px; display: none; z-index: 100; width: 180px;
-  }
-</style>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Моё Расписание • SportSchedule</title>
+
+<!-- Premium Fonts -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Space+Grotesk:wght@500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<link rel="stylesheet" href="{% static 'css/student.css' %}">
+
 </head>
 <body>
 
-<h2>Моё расписание</h2>
-<div id="calendar"></div>
+<!-- ========== NAVBAR ========== -->
+<nav class="navbar">
+    <div class="nav-left">
+        <a href="{% url 'home' %}" class="btn-back">
+            <i class="fas fa-arrow-left"></i>
+            <span class="d-none d-sm-inline">Назад</span>
+        </a>
+        <a href="{% url 'home' %}" class="brand">
+            <i class="fas fa-dumbbell"></i>
+            SportSchedule
+        </a>
+    </div>
+
+    <!-- User Account Dropdown -->
+    {% if user.is_authenticated %}
+    <div class="user-dropdown" id="userDropdown">
+        <div class="user-toggle" onclick="toggleDropdown()">
+            <div class="user-avatar"><i class="fas fa-user"></i></div>
+            <span class="user-name">{{ user.username }}</span>
+            <i class="fas fa-chevron-down dropdown-arrow"></i>
+        </div>
+        <div class="dropdown-menu-custom" id="dropdownMenu">
+            <a class="dropdown-item-custom" href="{% url 'student-dashboard' %}">
+                <i class="fas fa-calendar-check"></i> Моё расписание
+            </a>
+            <a class="dropdown-item-custom" href="#">
+                <i class="fas fa-cog"></i> Настройки
+            </a>
+            <div style="height: 1px; background: rgba(255,255,255,0.08); margin: 0.4rem 0.6rem;"></div>
+            <a class="dropdown-item-custom" href="{% url 'logout' %}?next={% url 'home' %}">
+                <i class="fas fa-right-from-bracket"></i> Выйти
+            </a>
+        </div>
+    </div>
+    {% else %}
+    <a href="{% url 'login' %}" class="btn-back" style="background: var(--gradient-1); border: none;">
+        <i class="fas fa-right-to-bracket"></i> Войти
+    </a>
+    {% endif %}
+</nav>
+
+<!-- ========== MAIN CONTENT ========== -->
+<main class="main-content">
+    <div class="container">
+        <div class="header">
+            <h2>Моё Расписание</h2>
+            <p>Ваши тренировки и занятия на этот месяц</p>
+        </div>
+
+        <div class="calendar-wrapper">
+            <div class="month-nav">
+                <button class="nav-btn" onclick="changeMonth(-1)"><i class="fas fa-chevron-left"></i></button>
+                <div class="month-title"><i class="fas fa-calendar-alt"></i><span id="currentMonth">Загрузка...</span></div>
+                <button class="nav-btn" onclick="changeMonth(1)"><i class="fas fa-chevron-right"></i></button>
+            </div>
+
+            <div class="weekdays">
+                <div class="weekday">Пн</div><div class="weekday">Вт</div><div class="weekday">Ср</div>
+                <div class="weekday">Чт</div><div class="weekday">Пт</div><div class="weekday">Сб</div><div class="weekday">Вс</div>
+            </div>
+
+            <div id="calendar"><div class="loading"><i class="fas fa-circle-notch"></i></div></div>
+        </div>
+    </div>
+</main>
+
+<!-- Popup for day details -->
 <div id="popup"></div>
 
+<!-- ========== FOOTER ========== -->
+<footer class="footer">
+    <div class="footer-content">
+        <div class="footer-logo">
+            <i class="fas fa-dumbbell"></i> SportSchedule
+        </div>
+        <p class="footer-text">Персональное расписание для спортивных достижений</p>
+
+        <div class="footer-links">
+            <a href="#">Помощь</a>
+            <a href="#">Контакты</a>
+            <a href="#">Политика конфиденциальности</a>
+        </div>
+
+        <div class="footer-divider"></div>
+        <p class="footer-copyright">&copy; Cudesnici_INC 2026</p>
+    </div>
+</footer>
+
 <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
-<script src="{% static 'js/student.js' %}"></script>
+<script>
+function toggleDropdown() {
+    const menu = document.getElementById('dropdownMenu');
+    const toggle = document.querySelector('.user-toggle');
+    menu.classList.toggle('show');
+    toggle.classList.toggle('active');
+}
+
+document.addEventListener('click', (e) => {
+    const dropdown = document.getElementById('userDropdown');
+    if (dropdown && !dropdown.contains(e.target)) {
+        document.getElementById('dropdownMenu')?.classList.remove('show');
+        document.querySelector('.user-toggle')?.classList.remove('active');
+    }
+});
+
+// ===== Calendar Logic =====
+(async function() {
+    const calendarEl = document.getElementById('calendar');
+    const popup = document.getElementById('popup');
+    const currentMonthEl = document.getElementById('currentMonth');
+
+    let currentDate = new Date();
+    let currentMonth = currentDate.getMonth();
+    let currentYear = currentDate.getFullYear();
+
+    function getCookie(name) {
+        let cookieValue = null;
+        if (document.cookie && document.cookie !== '') {
+            const cookies = document.cookie.split(';');
+            for (let cookie of cookies) {
+                cookie = cookie.trim();
+                if (cookie.startsWith(name + '=')) {
+                    cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                    break;
+                }
+            }
+        }
+        return cookieValue;
+    }
+    const csrfToken = getCookie('csrftoken');
+
+    const monthNames = ['Январь','Февраль','Март','Апрель','Май','Июнь','Июль','Август','Сентябрь','Октябрь','Ноябрь','Декабрь'];
+    const dayNames = ['Воскресенье','Понедельник','Вторник','Среда','Четверг','Пятница','Суббота'];
+    const dayMap = { 'Sun': 0, 'Mon': 1, 'Tue': 2, 'Wed': 3, 'Thu': 4, 'Fri': 5, 'Sat': 6 };
+
+    async function loadStudentGroups() {
+        try {
+            const res = await axios.get('/api/student-groups/', {
+                withCredentials: true,
+                headers: { 'X-CSRFToken': csrfToken }
+            });
+            const groups = res.data.map(g => ({
+                name: g.name, teacher: g.teacher,
+                color: g.color || '#e63976',
+                day_of_week: g.day_of_week, start_time: g.start_time
+            }));
+            renderCalendar(groups);
+        } catch (err) {
+            console.error('Ошибка:', err);
+            calendarEl.innerHTML = `<div class="empty-state"><i class="fas fa-exclamation-circle"></i><p>Не удалось загрузить расписание</p></div>`;
+        }
+    }
+
+    function renderCalendar(groups) {
+        currentMonthEl.textContent = `${monthNames[currentMonth]} ${currentYear}`;
+        calendarEl.innerHTML = '';
+
+        const firstDay = new Date(currentYear, currentMonth, 1).getDay();
+        const adjustedFirstDay = firstDay === 0 ? 6 : firstDay - 1;
+        const daysInMonth = new Date(currentYear, currentMonth + 1, 0).getDate();
+
+        for (let i = 0; i < adjustedFirstDay; i++) {
+            const empty = document.createElement('div');
+            empty.style.visibility = 'hidden';
+            calendarEl.appendChild(empty);
+        }
+
+        for (let day = 1; day <= daysInMonth; day++) {
+            const cell = document.createElement('div');
+            cell.className = 'day';
+            const dayNumber = document.createElement('div');
+            dayNumber.className = 'day-number';
+            dayNumber.textContent = day;
+            cell.appendChild(dayNumber);
+
+            const cellDate = new Date(currentYear, currentMonth, day);
+            const cellDay = cellDate.getDay();
+            const adjustedCellDay = cellDay === 0 ? 6 : cellDay - 1;
+            const dayGroups = groups.filter(g => dayMap[g.day_of_week] === adjustedCellDay);
+
+            if (dayGroups.length) {
+                cell.classList.add('has-class');
+                const groupIndex = groups.indexOf(dayGroups[0]) % 3;
+                cell.classList.add(`group-${groupIndex + 1}`);
+                const indicator = document.createElement('div');
+                indicator.className = 'day-indicator';
+                cell.appendChild(indicator);
+
+                // ИСПРАВЛЕНИЕ: Передаем e.clientX и e.clientY
+                cell.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    // Передаем координаты мыши
+                    showPopup(day, cellDate, dayGroups, e.clientX, e.clientY);
+                });
+            }
+            calendarEl.appendChild(cell);
+        }
+    }
+
+    // ИСПРАВЛЕНИЕ: Принимаем координаты мыши (mouseX, mouseY)
+    function showPopup(day, date, groups, mouseX, mouseY) {
+        const dayName = dayNames[date.getDay()];
+        const groupsHTML = groups.map((g, i) => `
+            <div class="group-item" style="animation: fadeInUp 0.3s ease ${i*0.1}s both;">
+                <div class="group-name"><i class="fas fa-star"></i>${g.name}</div>
+                <div class="group-detail"><i class="fas fa-user-tie"></i><span>${g.teacher}</span></div>
+                <div class="group-time"><i class="fas fa-clock"></i>${g.start_time}</div>
+            </div>`).join('');
+
+        popup.innerHTML = `
+            <div class="popup-header">
+                <div class="popup-icon"><i class="fas fa-calendar-day"></i></div>
+                <div><div class="popup-title">${day} ${monthNames[currentMonth]}</div><div style="color:rgba(255,255,255,0.6);font-size:0.9rem;">${dayName}</div></div>
+            </div><div class="popup-content">${groupsHTML}</div>`;
+
+        // 1. Сначала делаем видимым, чтобы браузер мог вычислить размеры
+        popup.style.display = 'block';
+
+        // 2. Получаем реальные размеры попапа
+        const popupWidth = popup.offsetWidth;
+        const popupHeight = popup.offsetHeight;
+
+        // 3. Вычисляем позицию относительно мыши (центрируем попап по курсору)
+        let top = mouseY - (popupHeight / 2);
+        let left = mouseX - (popupWidth / 2);
+
+        // Добавляем смещение, чтобы курсор не перекрывал текст (чуть правее и ниже)
+        // Если хотите строго по центру мыши - уберите следующие две строки
+        top += 15;
+        left += 15;
+
+        // 4. Ограничения (чтобы не вылетал за экран)
+        const viewportWidth = window.innerWidth;
+        const viewportHeight = window.innerHeight;
+        const margin = 20;
+
+        // Проверка правого края
+        if (left + popupWidth > viewportWidth - margin) {
+            left = viewportWidth - popupWidth - margin;
+        }
+
+        // Проверка нижнего края
+        if (top + popupHeight > viewportHeight - margin) {
+            top = viewportHeight - popupHeight - margin;
+        }
+
+        // Проверка левого/верхнего края
+        if (left < margin) left = margin;
+        if (top < margin) top = margin;
+
+        // 5. Применяем координаты
+        popup.style.left = left + 'px';
+        popup.style.top = top + 'px';
+    }
+
+    window.changeMonth = function(delta) {
+        currentMonth += delta;
+        if (currentMonth > 11) { currentMonth = 0; currentYear++; }
+        else if (currentMonth < 0) { currentMonth = 11; currentYear--; }
+        loadStudentGroups();
+    };
+
+    document.addEventListener('click', (e) => {
+        if (!e.target.closest('.day') && !e.target.closest('#popup')) {
+            popup.style.display = 'none';
+        }
+    });
+
+    await loadStudentGroups();
+})();
+</script>
 
 </body>
 </html>

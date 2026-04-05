@@ -2,14 +2,14 @@ from rest_framework import serializers
 from .models import Group
 from users.models import User
 
-# --- Базовый юзер (для отображения) ---
+# базовый юзер
 class UserSimpleSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
         fields = ['id', 'username']
 
 
-# --- ДЛЯ АДМИНА (CRUD) ---
+# админ
 class GroupAdminSerializer(serializers.ModelSerializer):
     class Meta:
         model = Group
@@ -29,7 +29,7 @@ class GroupAdminSerializer(serializers.ModelSerializer):
         return value
 
 
-# --- ДЛЯ УЧИТЕЛЯ (read only, с именами) ---
+# учитель
 class GroupTeacherSerializer(serializers.ModelSerializer):
     teacher = UserSimpleSerializer(read_only=True)
     students = UserSimpleSerializer(many=True, read_only=True)
@@ -39,7 +39,7 @@ class GroupTeacherSerializer(serializers.ModelSerializer):
         fields = ['id', 'name', 'teacher', 'students', 'day_of_week', 'start_time']
 
 
-# --- ДЛЯ УЧЕНИКА (тоже read only) ---
+# ученик
 class GroupStudentSerializer(serializers.ModelSerializer):
     teacher = serializers.CharField(source='teacher.username', read_only=True)
     students = serializers.PrimaryKeyRelatedField(many=True, read_only=True)

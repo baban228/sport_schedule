@@ -25,15 +25,13 @@ def is_admin(user):
 @login_required
 @user_passes_test(is_admin)
 def admin_dashboard(request):
-    return render(request, "groups.html")  # используем наш фронт для админки
+    return render(request, "groups.html")
 
 
 @login_required
 def teacher_dashboard(request):
-    # можно фильтровать группы по текущему учителю
     return render(request, "teacher.html")
 
 @login_required
 def student_dashboard(request):
-    # можно фильтровать группы по текущему студенту
     return render(request, "student.html")

@@ -1,8 +1,14 @@
-// teacher.js
+/**
+ * Исправленная логика загрузки таблицы.
+ * Вставьте этот код в конец блока extra_js, чтобы он выполнился после teacher.js
+ * и исправил отображение, если оригинальный скрипт создает лишние колонки.
+ */
 (function() {
-    console.log('teacher.js загружен');
+    // Проверяем, есть ли таблица
+    const tableBody = document.querySelector('#teacher-groups-table tbody');
+    if (!tableBody) return;
 
-    // Получаем CSRF токен
+    // Функция получения CSRF токена (копия из вашего js)
     function getCookie(name) {
         let cookieValue = null;
         if (document.cookie && document.cookie !== '') {
@@ -15,51 +21,79 @@
                 }
             }
         }
-        console.log('CSRF токен teacher:', cookieValue);
         return cookieValue;
     }
 
     const csrfToken = getCookie('csrftoken');
 
-    // Загрузка групп для учителя
-    async function loadTeacherGroups() {
-        const tbody = document.querySelector('#teacher-groups-table tbody');
-        if (!tbody) {
-            console.warn('Таблица #teacher-groups-table не найдена, пропускаем loadTeacherGroups');
-            return;
-        }
-
+    async function loadTeacherGroupsFixed() {
         try {
             const res = await axios.get('/api/teacher-groups/', {
                 withCredentials: true,
                 headers: { 'X-CSRFToken': csrfToken }
             });
 
-            console.log('Получены группы учителя:', res.data);
+            console.log('Groups loaded (Fixed):', res.data);
+            tableBody.innerHTML = '';
 
-            tbody.innerHTML = '';
-            res.data.forEach(group => {
-                const students = group.students.map(s => s.username).join(', ');
-                tbody.innerHTML += `
+            if (!res.data || res.data.length === 0) {
+                 tableBody.innerHTML = `
                     <tr>
-                        <td>${group.name}</td>
-                        <td>${group.teacher.username}</td>
-                        <td>${students}</td>
-                        <td>${group.day_of_week || '-'}</td>
-                        <td>${group.start_time || '-'}</td>
+                        <td colspan="4" class="text-center py-4 text-white-50">
+                            У вас пока нет назначенных групп
+                        </td>
+                    </tr>`;
+                 return;
+            }
+
+            res.data.forEach(group => {
+                // Безопасное получение списка учеников
+                let studentsText = '-';
+                if (group.students && Array.isArray(group.students) && group.students.length > 0) {
+                    studentsText = group.students.map(s => s.username).join(', ');
+                }
+
+                // Маппинг дней недели
+                const daysMap = {
+                    'Mon': 'Понедельник', 'Tue': 'Вторник', 'Wed': 'Среда',
+                    'Thu': 'Четверг', 'Fri': 'Пятница', 'Sat': 'Суббота', 'Sun': 'Воскресенье'
+                };
+                const dayDisplay = daysMap[group.day_of_week] || group.day_of_week || '-';
+
+                const timeDisplay = group.start_time || '-';
+
+                // ГЕНЕРАЦИЯ СТРОКИ: РОВНО 4 ЯЧЕЙКИ (td)
+                // 1. Группа
+                // 2. Ученики
+                // 3. День
+                // 4. Время
+                const rowHtml = `
+                    <tr>
+                        <td class="fw-bold" style="color: white;">${group.name}</td>
+                        <td>${studentsText}</td>
+                        <td>${dayDisplay}</td>
+                        <td>${timeDisplay}</td>
                     </tr>
                 `;
+
+                tableBody.insertAdjacentHTML('beforeend', rowHtml);
             });
         } catch (err) {
-            console.error('Ошибка загрузки групп учителя:', err.response || err);
-            alert('Не удалось загрузить группы');
+            console.error('Error loading teacher groups:', err);
+            tableBody.innerHTML = `
+                <tr>
+                    <td colspan="4" class="text-center py-4 text-danger">
+                        <i class="fas fa-exclamation-triangle me-2"></i>Ошибка загрузки данных
+                    </td>
+                </tr>`;
         }
     }
 
-    // Запуск после загрузки страницы
-    window.addEventListener('DOMContentLoaded', () => {
-        console.log('Страница teacher загружена, запускаем loadTeacherGroups...');
-        loadTeacherGroups();
+    // Запускаем исправленную функцию после полной загрузки страницы
+    window.addEventListener('load', () => {
+        // Небольшая задержка, чтобы убедиться, что оригинальный скрипт отработал (если он есть)
+        // или просто загружаем сами
+        setTimeout(loadTeacherGroupsFixed, 100);
     });
 
 })();
