@@ -12,16 +12,11 @@ from groups.views import (
 from config.views import home, admin_dashboard, teacher_dashboard, student_dashboard, register_view
 
 
-# путь
+# router для групп
 router = DefaultRouter()
 
-# Админ управляет группами
 router.register(r'groups', GroupAdminViewSet, basename='groups')
-
-# Учитель видит свои группы
 router.register(r'teacher-groups', TeacherGroupViewSet, basename='teacher-groups')
-
-# Ученик видит свои группы
 router.register(r'student-groups', StudentGroupViewSet, basename='student-groups')
 
 
@@ -34,15 +29,16 @@ urlpatterns = [
     path('teacher/', teacher_dashboard, name='teacher-dashboard'),
     path('student/', student_dashboard, name='student-dashboard'),
 
-
+    # auth
     path("login/", auth_views.LoginView.as_view(template_name="login.html"), name="login"),
     path("logout/", auth_views.LogoutView.as_view(next_page="/"), name="logout"),
     path("register/", register_view, name="register"),
-    # Django admin (встроенный)
+
+    # admin
     path('django-admin/', admin.site.urls),
 
     # API
     path('api/', include(router.urls)),
 
+    path('api/nutrition/', include('nutrition.urls')),
 ]
-
