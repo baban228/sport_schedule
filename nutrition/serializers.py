@@ -19,6 +19,7 @@ class MealItemSerializer(serializers.ModelSerializer):
         model = MealItem
         fields = [
             'id',
+            'meal',
             'product',
             'product_name',
             'weight',

@@ -33,6 +33,7 @@ class MealViewSet(viewsets.ModelViewSet):
         return Meal.objects.filter(user=self.request.user)
 
     def perform_create(self, serializer):
+        print("Создаём приём пищи для пользователя:", self.request.user)
         serializer.save(user=self.request.user)
 
     # 📅 Дневник за сегодня
@@ -52,6 +53,7 @@ class MealItemViewSet(viewsets.ModelViewSet):
 
     def get_queryset(self):
         return MealItem.objects.filter(meal__user=self.request.user)
+    
 
 
 # 📊 Статистика

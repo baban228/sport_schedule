@@ -46,10 +46,6 @@ class Meal(models.Model):
 
     created_at = models.DateTimeField(auto_now_add=True)
 
-    def clean(self):
-        # Проверка: только ученик
-        if self.user.role != 'student':
-            raise ValidationError("Только ученики могут вести дневник питания")
 
     def __str__(self):
         return f"{self.user} - {self.meal_type} ({self.date})"
@@ -120,9 +116,6 @@ class DailyGoal(models.Model):
     fat = models.FloatField(default=70)
     carbs = models.FloatField(default=250)
 
-    def clean(self):
-        if self.user.role != 'student':
-            raise ValidationError("Цели доступны только ученикам")
 
     def __str__(self):
         return f"Цель {self.user}"

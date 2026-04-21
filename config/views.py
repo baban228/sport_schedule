@@ -35,3 +35,7 @@ def teacher_dashboard(request):
 @login_required
 def student_dashboard(request):
     return render(request, "student.html")
+
+@login_required
+def diet_dashboard(request):
+    return render(request, "diet.html")

@@ -2,6 +2,7 @@ from django.contrib import admin
 from django.urls import path, include
 from rest_framework.routers import DefaultRouter
 from django.contrib.auth import views as auth_views
+from django.views.generic import TemplateView 
 
 from groups.views import (
     GroupAdminViewSet,
@@ -9,7 +10,7 @@ from groups.views import (
     StudentGroupViewSet
 )
 
-from config.views import home, admin_dashboard, teacher_dashboard, student_dashboard, register_view
+from config.views import home, admin_dashboard, teacher_dashboard, student_dashboard, register_view, diet_dashboard
 
 
 # router для групп
@@ -36,6 +37,8 @@ urlpatterns = [
 
     # admin
     path('django-admin/', admin.site.urls),
+
+    path('diet/', diet_dashboard, name='diet'),
 
     # API
     path('api/', include(router.urls)),

@@ -31,9 +31,12 @@
                     </button>
                     <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userMenuButton">
                         <li>
-                            <a class="dropdown-item" href="{% url 'logout' %}">
-                                <i class="fas fa-right-from-bracket"></i> Выйти
-                            </a>
+                            <form method="post" action="{% url 'logout' %}" style="display: inline;">
+                              {% csrf_token %}
+                              <button type="submit" class="dropdown-item">
+                                  <i class="fas fa-right-from-bracket"></i> Выйти
+                              </button>
+                          </form>
                         </li>
                     </ul>
                 </div>
@@ -61,12 +64,20 @@
                         <a href="{% url 'teacher-dashboard' %}" class="btn btn-primary-custom px-4 py-3 fs-5">
                             <i class="fas fa-chalkboard-user me-2"></i> Моё расписание
                         </a>
+                        <!-- Кнопка "Диета" для преподавателя -->
+                        <a href="{% url 'diet' %}" class="btn btn-success px-4 py-3 fs-5">
+                            <i class="fas fa-utensils me-2"></i> Диета
+                        </a>
                         <div class="role-badge role-teacher">
                             <i class="fas fa-user-tie me-1"></i> Преподаватель
                         </div>
                     {% else %}
                         <a href="{% url 'student-dashboard' %}" class="btn btn-primary-custom px-4 py-3 fs-5">
                             <i class="fas fa-graduation-cap me-2"></i> Моё расписание
+                        </a>
+                        <!-- Кнопка "Диета" для студента -->
+                        <a href="{% url 'diet' %}" class="btn btn-success px-4 py-3 fs-5">
+                            <i class="fas fa-utensils me-2"></i> Диета
                         </a>
                         <div class="role-badge role-student">
                             <i class="fas fa-person-running me-1"></i> Студент
