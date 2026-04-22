@@ -1,7 +1,7 @@
 .form-control-bright {
-    background: rgba(40, 30, 60, 0.95) !important; /* Чуть светлее фона карточки */
+    background: rgba(40, 30, 60, 0.95) !important;
     border: 1px solid rgba(157, 78, 221, 0.4) !important;
-    color: #ffffff !important; /* Ярко-белый текст */
+    color: #ffffff !important;
     font-weight: 500;
     box-shadow: 0 2px 5px rgba(0,0,0,0.1);
 }
@@ -14,16 +14,14 @@
 }
 
 .form-control-bright::placeholder {
-    color: rgba(255, 255, 255, 0.4) !important; /* Placeholder чуть тусклее, но читаемый */
+    color: rgba(255, 255, 255, 0.4) !important;
 }
 
-/* Исправление цвета текста в select option */
 .form-control-bright option {
     background-color: var(--secondary-dark);
     color: white;
 }
 
-/* --- Стили таблицы (как было, проверено) --- */
 .table-groups {
     background: rgba(26, 18, 45, 0.7);
     border-radius: 16px;
@@ -48,7 +46,7 @@
 
 .table-groups tbody td {
     background: transparent;
-    color: #f0f0f0; /* Очень светлый серый */
+    color: #f0f0f0;
     padding: 1.1rem 1rem;
     border-bottom: 1px solid rgba(255, 255, 255, 0.05);
     vertical-align: middle;

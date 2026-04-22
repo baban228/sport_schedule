@@ -1,8 +1,6 @@
-// admin.js
 (function() {
     console.log('admin.js загружен');
 
-    // Получаем CSRF токен
     function getCookie(name) {
         let cookieValue = null;
         if (document.cookie && document.cookie !== '') {
@@ -21,7 +19,6 @@
 
     const csrfToken = getCookie('csrftoken');
 
-    // Показываем/скрываем форму добавления группы
     function toggleGroupForm() {
         const form = document.getElementById('group-form');
         if (!form) return;
@@ -30,7 +27,6 @@
     }
     window.toggleGroupForm = toggleGroupForm;
 
-    // Загрузка всех групп
     async function loadGroups() {
         const tbody = document.querySelector('#groups-table tbody');
         if (!tbody) {
@@ -64,7 +60,6 @@
         }
     }
 
-    // Создание новой группы
     async function createGroup() {
         const name = document.getElementById('group-name').value;
         const teacher = parseInt(document.getElementById('group-teacher').value);
@@ -103,7 +98,6 @@
     }
     window.createGroup = createGroup;
 
-    // Запуск после загрузки страницы
     window.addEventListener('DOMContentLoaded', () => {
         console.log('Страница admin загружена, запускаем loadGroups...');
         loadGroups();

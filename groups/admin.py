@@ -4,7 +4,7 @@ from schedule.models import Lesson
 
 class LessonInline(admin.TabularInline):
     model = Lesson
-    extra = 1  # количество пустых форм для добавления сразу
+    extra = 1
 
 @admin.register(Group)
 class GroupAdmin(admin.ModelAdmin):

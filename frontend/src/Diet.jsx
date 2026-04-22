@@ -1,6 +1,7 @@
 // src/pages/Diet.jsx
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
+import { PieChart, Pie, Cell, Tooltip, ResponsiveContainer } from 'recharts';
 
 // Получить CSRF-токен из cookie
 function getCSRFToken() {
@@ -39,6 +40,10 @@ const Diet = () => {
 
   const [message, setMessage] = useState('');
   const [loading, setLoading] = useState(false);
+
+  // Цвета для графика
+  const COLORS = ['#4CAF50', '#FF9800', '#2196F3']; // Белки, Жиры, Углеводы
+  const MACRO_LABELS = ['Белки', 'Жиры', 'Углеводы'];
 
   // Загрузить сегодняшнюю статистику
   const loadStats = async () => {
@@ -164,21 +169,72 @@ const Diet = () => {
     }
   };
 
+  // Подготовка данных для графика
+  const totalMacros = totals.protein + totals.fat + totals.carbs;
+  const pieData = totalMacros > 0 ? [
+    { name: 'Белки', value: totals.protein },
+    { name: 'Жиры', value: totals.fat },
+    { name: 'Углеводы', value: totals.carbs },
+  ] : [];
+
   return (
     <div style={{ padding: '20px', maxWidth: '700px', margin: '0 auto' }}>
       <h1>Добавить приём пищи</h1>
 
-      <div style={{ marginBottom: '20px' }}>
-        <Link to="/">🏠 На главную</Link>
+      <div style={{ 
+        display: 'flex', 
+        justifyContent: 'space-between', 
+        alignItems: 'center',
+        marginBottom: '20px' 
+      }}>
+        <a href="/" style={{ textDecoration: 'none', color: '#1976d2' }}>🏠 На главную</a>
+        <Link 
+          to="/weekly/" 
+          style={{ 
+            padding: '6px 12px',
+            backgroundColor: '#e0e0e0',
+            borderRadius: '4px',
+            textDecoration: 'none',
+            color: '#333',
+            fontWeight: 'bold'
+          }}
+        >
+          📅 Неделя
+        </Link>
       </div>
 
-      {/* Статистика */}
-      <div style={{ marginBottom: '25px', padding: '15px', backgroundColor: '#f9f9f9', borderRadius: '6px' }}>
-        <h3>Сегодня вы съели:</h3>
-        <p>🔥 Калории: <strong>{totals.calories.toFixed(1)}</strong> ккал</p>
-        <p>🥚 Белки: <strong>{totals.protein.toFixed(1)}</strong> г</p>
-        <p>🧈 Жиры: <strong>{totals.fat.toFixed(1)}</strong> г</p>
-        <p>🍞 Углеводы: <strong>{totals.carbs.toFixed(1)}</strong> г</p>
+      {/* Круговая диаграмма */}
+      <div style={{ marginBottom: '25px', textAlign: 'center' }}>
+        <h3>Сегодняшнее соотношение БЖУ</h3>
+        {totalMacros > 0 ? (
+          <div style={{ height: 300, margin: '0 auto' }}>
+            <ResponsiveContainer width="100%" height="100%">
+              <PieChart>
+                <Pie
+                  data={pieData}
+                  cx="50%"
+                  cy="50%"
+                  innerRadius={60}
+                  outerRadius={100}
+                  paddingAngle={2}
+                  dataKey="value"
+                >
+                  {pieData.map((entry, index) => (
+                    <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
+                  ))}
+                </Pie>
+                <Tooltip formatter={(value) => `${value.toFixed(1)} г`} />
+              </PieChart>
+            </ResponsiveContainer>
+          </div>
+        ) : (
+          <p>Пока ничего не записано.</p>
+        )}
+
+        {/* Общие калории */}
+        <div style={{ marginTop: '15px', fontSize: '18px' }}>
+          🔥 <strong>{totals.calories.toFixed(1)}</strong> ккал
+        </div>
       </div>
 
       {/* Сообщение */}

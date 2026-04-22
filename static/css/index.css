@@ -175,17 +175,16 @@ body {
     margin-bottom: 0.5rem;
 }
 
-/* Единый стиль для ВСЕХ полей ввода */
 .form-control,
 .form-select {
     background: rgba(40, 30, 60, 0.85);
     border: 1px solid rgba(157, 78, 221, 0.5);
-    color: white !important; /* Яркий белый текст */
+    color: white !important;
     border-radius: 12px;
     padding: 0.95rem 1.35rem;
     transition: all 0.3s ease;
-    font-size: 1.12rem !important; /* Увеличенный шрифт */
-    letter-spacing: 0.04em !important; /* Чёткое расстояние между символами */
+    font-size: 1.12rem !important;
+    letter-spacing: 0.04em !important;
     line-height: 1.5;
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
 }
@@ -204,14 +203,13 @@ body {
     font-weight: 400;
 }
 
-/* Яркие точки пароля — улучшенная версия */
 .form-control[type="password"] {
     -webkit-text-security: disc !important;
     text-security: disc !important;
-    letter-spacing: 0.18em !important; /* Больше расстояние между точками */
-    color: var(--accent-pink) !important; /* Яркий розово-фиолетовый */
+    letter-spacing: 0.18em !important;
+    color: var(--accent-pink) !important;
     font-size: 1.15rem !important;
-    text-shadow: 0 0 3px rgba(230, 57, 118, 0.7); /* Лёгкое свечение точек */
+    text-shadow: 0 0 3px rgba(230, 57, 118, 0.7);
 }
 
 .form-select {

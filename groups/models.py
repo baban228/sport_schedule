@@ -19,7 +19,6 @@ class Group(models.Model):
 
     color = models.CharField(max_length=7, default='#FFFFFF')
 
-    # Новые поля
     DAY_CHOICES = [
         ('Mon', 'Понедельник'),
         ('Tue', 'Вторник'),

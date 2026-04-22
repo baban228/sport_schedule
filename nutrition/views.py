@@ -9,7 +9,6 @@ from .models import Product, Meal, MealItem
 from .serializers import ProductSerializer, MealSerializer, MealItemSerializer
 
 
-# 🔹 Продукты
 class ProductViewSet(viewsets.ModelViewSet):
     serializer_class = ProductSerializer
     permission_classes = [permissions.IsAuthenticated]
@@ -24,7 +23,6 @@ class ProductViewSet(viewsets.ModelViewSet):
         return queryset
 
 
-# 🔹 Приемы пищи
 class MealViewSet(viewsets.ModelViewSet):
     serializer_class = MealSerializer
     permission_classes = [permissions.IsAuthenticated]
@@ -33,10 +31,8 @@ class MealViewSet(viewsets.ModelViewSet):
         return Meal.objects.filter(user=self.request.user)
 
     def perform_create(self, serializer):
-        print("Создаём приём пищи для пользователя:", self.request.user)
         serializer.save(user=self.request.user)
 
-    # 📅 Дневник за сегодня
     @action(detail=False, methods=['get'])
     def today(self, request):
         today = now().date()
@@ -46,7 +42,6 @@ class MealViewSet(viewsets.ModelViewSet):
         return Response(serializer.data)
 
 
-# 🔹 Элементы еды
 class MealItemViewSet(viewsets.ModelViewSet):
     serializer_class = MealItemSerializer
     permission_classes = [permissions.IsAuthenticated]
@@ -56,11 +51,9 @@ class MealItemViewSet(viewsets.ModelViewSet):
     
 
 
-# 📊 Статистика
 class NutritionStatsViewSet(viewsets.ViewSet):
     permission_classes = [permissions.IsAuthenticated]
 
-    # 🔥 Сегодня
     @action(detail=False, methods=['get'])
     def today(self, request):
         user = request.user
@@ -69,7 +62,6 @@ class NutritionStatsViewSet(viewsets.ViewSet):
         meals = Meal.objects.filter(user=user, date=today)
         return Response(self.calculate_totals(meals))
 
-    # 🔥 Неделя (для графика)
     @action(detail=False, methods=['get'])
     def week(self, request):
         user = request.user
@@ -90,7 +82,6 @@ class NutritionStatsViewSet(viewsets.ViewSet):
 
         return Response(list(reversed(data)))
 
-    # 🧠 Подсчет
     def calculate_totals(self, meals):
         calories = protein = fat = carbs = 0
 

@@ -5,7 +5,6 @@ from django.contrib.auth import login
 
 def home(request):
     if request.user.is_authenticated:
-        # при желании можно сразу редиректить по роли
         return render(request, "index.html", {"form": UserRegisterForm()})
     return render(request, "index.html", {"form": UserRegisterForm()})
 

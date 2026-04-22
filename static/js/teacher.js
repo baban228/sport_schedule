@@ -1,14 +1,7 @@
-/**
- * Исправленная логика загрузки таблицы.
- * Вставьте этот код в конец блока extra_js, чтобы он выполнился после teacher.js
- * и исправил отображение, если оригинальный скрипт создает лишние колонки.
- */
 (function() {
-    // Проверяем, есть ли таблица
     const tableBody = document.querySelector('#teacher-groups-table tbody');
     if (!tableBody) return;
 
-    // Функция получения CSRF токена (копия из вашего js)
     function getCookie(name) {
         let cookieValue = null;
         if (document.cookie && document.cookie !== '') {
@@ -47,13 +40,11 @@
             }
 
             res.data.forEach(group => {
-                // Безопасное получение списка учеников
                 let studentsText = '-';
                 if (group.students && Array.isArray(group.students) && group.students.length > 0) {
                     studentsText = group.students.map(s => s.username).join(', ');
                 }
 
-                // Маппинг дней недели
                 const daysMap = {
                     'Mon': 'Понедельник', 'Tue': 'Вторник', 'Wed': 'Среда',
                     'Thu': 'Четверг', 'Fri': 'Пятница', 'Sat': 'Суббота', 'Sun': 'Воскресенье'
@@ -62,11 +53,6 @@
 
                 const timeDisplay = group.start_time || '-';
 
-                // ГЕНЕРАЦИЯ СТРОКИ: РОВНО 4 ЯЧЕЙКИ (td)
-                // 1. Группа
-                // 2. Ученики
-                // 3. День
-                // 4. Время
                 const rowHtml = `
                     <tr>
                         <td class="fw-bold" style="color: white;">${group.name}</td>
@@ -89,10 +75,8 @@
         }
     }
 
-    // Запускаем исправленную функцию после полной загрузки страницы
     window.addEventListener('load', () => {
-        // Небольшая задержка, чтобы убедиться, что оригинальный скрипт отработал (если он есть)
-        // или просто загружаем сами
+
         setTimeout(loadTeacherGroupsFixed, 100);
     });
 

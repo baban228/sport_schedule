@@ -6,7 +6,6 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Моё Расписание • SportSchedule</title>
 
-<!-- Premium Fonts -->
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Space+Grotesk:wght@500;700&display=swap" rel="stylesheet">
@@ -16,7 +15,6 @@
 </head>
 <body>
 
-<!-- ========== NAVBAR ========== -->
 <nav class="navbar">
     <div class="nav-left">
         <a href="{% url 'home' %}" class="btn-back">
@@ -29,7 +27,6 @@
         </a>
     </div>
 
-    <!-- User Account Dropdown -->
     {% if user.is_authenticated %}
     <div class="user-dropdown" id="userDropdown">
         <div class="user-toggle" onclick="toggleDropdown()">
@@ -57,7 +54,6 @@
     {% endif %}
 </nav>
 
-<!-- ========== MAIN CONTENT ========== -->
 <main class="main-content">
     <div class="container">
         <div class="header">
@@ -82,10 +78,8 @@
     </div>
 </main>
 
-<!-- Popup for day details -->
 <div id="popup"></div>
 
-<!-- ========== FOOTER ========== -->
 <footer class="footer">
     <div class="footer-content">
         <div class="footer-logo">
@@ -121,7 +115,6 @@ document.addEventListener('click', (e) => {
     }
 });
 
-// ===== Calendar Logic =====
 (async function() {
     const calendarEl = document.getElementById('calendar');
     const popup = document.getElementById('popup');
@@ -204,11 +197,9 @@ document.addEventListener('click', (e) => {
                 indicator.className = 'day-indicator';
                 cell.appendChild(indicator);
 
-                // ИСПРАВЛЕНИЕ: Передаем e.clientX и e.clientY
                 cell.addEventListener('click', (e) => {
                     e.preventDefault();
                     e.stopPropagation();
-                    // Передаем координаты мыши
                     showPopup(day, cellDate, dayGroups, e.clientX, e.clientY);
                 });
             }
@@ -216,7 +207,6 @@ document.addEventListener('click', (e) => {
         }
     }
 
-    // ИСПРАВЛЕНИЕ: Принимаем координаты мыши (mouseX, mouseY)
     function showPopup(day, date, groups, mouseX, mouseY) {
         const dayName = dayNames[date.getDay()];
         const groupsHTML = groups.map((g, i) => `
@@ -232,42 +222,32 @@ document.addEventListener('click', (e) => {
                 <div><div class="popup-title">${day} ${monthNames[currentMonth]}</div><div style="color:rgba(255,255,255,0.6);font-size:0.9rem;">${dayName}</div></div>
             </div><div class="popup-content">${groupsHTML}</div>`;
 
-        // 1. Сначала делаем видимым, чтобы браузер мог вычислить размеры
         popup.style.display = 'block';
 
-        // 2. Получаем реальные размеры попапа
         const popupWidth = popup.offsetWidth;
         const popupHeight = popup.offsetHeight;
 
-        // 3. Вычисляем позицию относительно мыши (центрируем попап по курсору)
         let top = mouseY - (popupHeight / 2);
         let left = mouseX - (popupWidth / 2);
 
-        // Добавляем смещение, чтобы курсор не перекрывал текст (чуть правее и ниже)
-        // Если хотите строго по центру мыши - уберите следующие две строки
         top += 15;
         left += 15;
 
-        // 4. Ограничения (чтобы не вылетал за экран)
         const viewportWidth = window.innerWidth;
         const viewportHeight = window.innerHeight;
         const margin = 20;
 
-        // Проверка правого края
         if (left + popupWidth > viewportWidth - margin) {
             left = viewportWidth - popupWidth - margin;
         }
 
-        // Проверка нижнего края
         if (top + popupHeight > viewportHeight - margin) {
             top = viewportHeight - popupHeight - margin;
         }
 
-        // Проверка левого/верхнего края
         if (left < margin) left = margin;
         if (top < margin) top = margin;
 
-        // 5. Применяем координаты
         popup.style.left = left + 'px';
         popup.style.top = top + 'px';
     }

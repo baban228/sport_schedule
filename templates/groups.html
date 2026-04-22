@@ -3,7 +3,6 @@
 
 {% block content %}
 
-<!-- Заголовок страницы -->
 <div class="d-flex justify-content-between align-items-center mb-4 animate-fade">
     <div>
         <h2 class="hero-title mb-0" style="font-size: 2.5rem;">Группы</h2>
@@ -14,7 +13,6 @@
     </button>
 </div>
 
-<!-- Форма добавления (Скрыта по умолчанию) -->
 <div id="group-form" class="card card-custom p-4 mb-5 animate-fade" style="display:none; border-top: 3px solid var(--accent-purple);">
     <h5 class="mb-4" style="font-family: 'Montserrat', sans-serif; font-weight: 700; color: white;">
         Новая группа
@@ -22,7 +20,6 @@
 
     <div class="row g-3">
         <div class="col-md-6">
-            <!-- Яркий лейбл -->
             <label class="form-label text-white fw-bold">Название группы</label>
             <input type="text" id="group-name" class="form-control form-control-bright" placeholder="Например: Футбол Юниоры">
         </div>
@@ -70,7 +67,6 @@
     </div>
 </div>
 
-<!-- Таблица групп -->
 <div class="table-responsive animate-fade">
     <table class="table table-groups" id="groups-table">
         <thead>
@@ -83,7 +79,6 @@
             </tr>
         </thead>
         <tbody>
-            <!-- Данные подгружаются через JS -->
             <tr>
                 <td colspan="5" class="text-center py-5 text-white-50">
                     <i class="fas fa-inbox fa-2x mb-3 d-block opacity-50"></i>
