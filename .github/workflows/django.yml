@@ -11,7 +11,7 @@ jobs:
     runs-on: ubuntu-latest
 
     services:
-      postgres:
+      db:
         image: postgres:15
         env:
           POSTGRES_USER: myuser
@@ -41,23 +41,21 @@ jobs:
     - name: Run migrations
       run: python manage.py migrate
       env:
-
-        POSTGRES_HOST: postgres 
+        POSTGRES_HOST: db          
+        POSTGRES_PORT: 5432
         POSTGRES_DB: sport_schedule
         POSTGRES_USER: myuser
         POSTGRES_PASSWORD: mypass123
-        POSTGRES_PORT: 5432
-        SECRET_KEY: test-secret-key-for-ci-only
+        SECRET_KEY: django-insecure-change-me-in-production
         DEBUG: True
-
 
     - name: Check server starts
       run: timeout 10 python manage.py runserver &
       env:
-        POSTGRES_HOST: postgres
+        POSTGRES_HOST: db
+        POSTGRES_PORT: 5432
         POSTGRES_DB: sport_schedule
         POSTGRES_USER: myuser
         POSTGRES_PASSWORD: mypass123
-        POSTGRES_PORT: 5432
-        SECRET_KEY: test-secret-key-for-ci-only
+        SECRET_KEY: django-insecure-change-me-in-production
         DEBUG: True
