@@ -1,0 +1,35 @@
+services:
+  db:
+    image: postgres:15
+    environment:
+      POSTGRES_DB: sport_schedule
+      POSTGRES_USER: myuser
+      POSTGRES_PASSWORD: mypass123
+      POSTGRES_HOST_AUTH_METHOD: trust
+    volumes:
+      - postgres_data:/var/lib/postgresql/data/
+    ports:
+      - "5433:5432"
+
+  web:
+    build: .
+    command: >
+      sh -c "python manage.py migrate &&
+            python manage.py collectstatic --noinput &&
+            python manage.py runserver 0.0.0.0:8000"
+    volumes:
+      - .:/app
+    ports:
+      - "8000:8000"
+    environment:
+      - POSTGRES_HOST=db
+      - POSTGRES_DB=sport_schedule
+      - POSTGRES_USER=myuser
+      - POSTGRES_PASSWORD=mypass123
+      - SECRET_KEY=django-insecure-change-me-in-production
+      - DEBUG=1
+    depends_on:
+      - db
+
+volumes:
+  postgres_data:

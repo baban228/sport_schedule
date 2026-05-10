@@ -10,7 +10,7 @@ from groups.views import (
     StudentGroupViewSet
 )
 
-from config.views import home, admin_dashboard, teacher_dashboard, student_dashboard, register_view, diet_dashboard
+from config.views import home, admin_dashboard, teacher_dashboard, student_dashboard, register_view, diet_dashboard, login_view
 
 
 # router для групп
@@ -31,7 +31,7 @@ urlpatterns = [
     path('student/', student_dashboard, name='student-dashboard'),
 
     # auth
-    path("login/", auth_views.LoginView.as_view(template_name="login.html"), name="login"),
+    path("login/", login_view, name="login"),  # ← ИЗМЕНЕНО
     path("logout/", auth_views.LogoutView.as_view(next_page="/"), name="logout"),
     path("register/", register_view, name="register"),
 
