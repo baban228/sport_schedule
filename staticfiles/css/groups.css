@@ -1,0 +1,63 @@
+.form-control-bright {
+    background: rgba(40, 30, 60, 0.95) !important;
+    border: 1px solid rgba(157, 78, 221, 0.4) !important;
+    color: #ffffff !important;
+    font-weight: 500;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+}
+
+.form-control-bright:focus {
+    background: rgba(50, 40, 70, 1) !important;
+    border-color: var(--accent-pink) !important;
+    color: #ffffff !important;
+    box-shadow: 0 0 0 0.25rem rgba(230, 57, 118, 0.2) !important;
+}
+
+.form-control-bright::placeholder {
+    color: rgba(255, 255, 255, 0.4) !important;
+}
+
+.form-control-bright option {
+    background-color: var(--secondary-dark);
+    color: white;
+}
+
+.table-groups {
+    background: rgba(26, 18, 45, 0.7);
+    border-radius: 16px;
+    overflow: hidden;
+    border-collapse: separate;
+    border-spacing: 0;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+}
+
+.table-groups thead th {
+    background: linear-gradient(90deg, #2a1f45 0%, #1f1635 100%);
+    color: var(--accent-gold);
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 700;
+    font-size: 0.95rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    padding: 1.2rem 1rem;
+    border-bottom: 2px solid rgba(157, 78, 221, 0.3);
+    white-space: nowrap;
+}
+
+.table-groups tbody td {
+    background: transparent;
+    color: #f0f0f0;
+    padding: 1.1rem 1rem;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    vertical-align: middle;
+    font-weight: 500;
+}
+
+.table-groups tbody tr:last-child td {
+    border-bottom: none;
+}
+
+.table-groups tbody tr:hover td {
+    background: rgba(157, 78, 221, 0.15);
+    color: white;
+}

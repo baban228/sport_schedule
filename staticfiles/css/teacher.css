@@ -1,0 +1,57 @@
+.table-teacher-schedule {
+    background: rgba(26, 18, 45, 0.7);
+    border-radius: 16px;
+    overflow: hidden;
+    border-collapse: separate;
+    border-spacing: 0;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+    width: 100%;
+    table-layout: fixed; 
+}
+
+.table-teacher-schedule thead th {
+    background: linear-gradient(90deg, #2a1f45 0%, #1f1635 100%);
+    color: var(--accent-gold);
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 700;
+    font-size: 0.95rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    padding: 1.2rem 1rem;
+    border-bottom: 2px solid rgba(157, 78, 221, 0.3);
+    white-space: nowrap;
+    text-align: left;
+}
+
+.table-teacher-schedule tbody td {
+    background: transparent;
+    color: #f0f0f0;
+    padding: 1.1rem 1rem;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    vertical-align: middle;
+    font-weight: 500;
+    word-wrap: break-word;
+    text-align: left;
+}
+
+.table-teacher-schedule tbody tr:last-child td {
+    border-bottom: none;
+}
+
+.table-teacher-schedule tbody tr:hover td {
+    background: rgba(157, 78, 221, 0.15);
+    color: white;
+    transition: background 0.2s ease;
+}
+
+.table-responsive::-webkit-scrollbar {
+    height: 8px;
+}
+.table-responsive::-webkit-scrollbar-track {
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 4px;
+}
+.table-responsive::-webkit-scrollbar-thumb {
+    background: var(--accent-purple);
+    border-radius: 4px;
+}
