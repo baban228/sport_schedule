@@ -14,9 +14,9 @@ jobs:
       postgres:
         image: postgres:15
         env:
-          POSTGRES_DB: sport_schedule
           POSTGRES_USER: myuser
           POSTGRES_PASSWORD: mypass123
+          POSTGRES_DB: sport_schedule
         ports:
           - 5432:5432
         options: >-
@@ -41,13 +41,19 @@ jobs:
     - name: Run migrations
       run: python manage.py migrate
       env:
-        DATABASE_URL: postgres://myuser:mypass123@localhost:5432/sport_schedule
+        DB_HOST: postgres
+        DB_NAME: sport_schedule
+        DB_USER: myuser
+        DB_PASSWORD: mypass123
         SECRET_KEY: test-secret-key-for-ci-only
         DEBUG: True
 
-    - name: Check server starts (optional)
+    - name: Check server starts
       run: timeout 10 python manage.py runserver &
       env:
-        DATABASE_URL: postgres://myuser:mypass123@localhost:5432/sport_schedule
+        DB_HOST: postgres
+        DB_NAME: sport_schedule
+        DB_USER: myuser
+        DB_PASSWORD: mypass123
         SECRET_KEY: test-secret-key-for-ci-only
         DEBUG: True
